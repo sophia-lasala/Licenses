@@ -1,11 +1,6 @@
-import java.io.PrintWriter;
-import java.io.FileNotFoundException;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class Data
 {
@@ -19,7 +14,6 @@ public class Data
         long views;
         double cost;
         LocalDate expirationDate, renewalDate;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
         System.out.println("Here is your list: ");
         try {
@@ -31,8 +25,8 @@ public class Data
                 title = ary[0];
                 licenseID = ary[1];
                 cost = Double.parseDouble(ary[2]);
-                expirationDate = LocalDate.parse(ary[3], formatter);
-                renewalDate = LocalDate.parse(ary[4], formatter);
+                expirationDate = LocalDate.parse(ary[3]);
+                renewalDate = LocalDate.parse(ary[4]);
                 views = Long.parseLong(ary[5]);
 
                 movieList.add(new Movie(title, licenseID, views, cost, expirationDate, renewalDate));
