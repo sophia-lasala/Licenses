@@ -8,6 +8,8 @@ public class Movie {
     private double cost;
     private LocalDate expirationDate, renewalDate;
 
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+
     public Movie() {
         title = "No title provided";
         licenseID = "No license provided";
@@ -27,7 +29,8 @@ public class Movie {
     }
 
     public String toString() {
-        return title + " | " + licenseID + " | $" + cost + " | " + expirationDate + " | " + renewalDate + " | " + views + " views";
+        return title + " | " + licenseID + " | $" + cost + " | " + expirationDate.format(FORMATTER) + " | " +
+                renewalDate.format(FORMATTER) + " | " + views + " views";
     }
 
     public String getTitle() {
