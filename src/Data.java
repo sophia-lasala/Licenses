@@ -1,12 +1,18 @@
+package Streaming;
+
+import java.io.PrintWriter;
+import java.io.FileNotFoundException;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.time.LocalDate;
 
 public class Data
 {
-    public static void main (String [] args) {
+    private ArrayList<Movie> movieList = new ArrayList<>();
+
+    public void movieList(ArrayList <Movie> movieList) {
         String fileName = "Movie Database.csv";
-        ArrayList<Movie> movieList = new ArrayList<>();
         PrintWriter outputStream = null;
         Scanner inputStream = null;
         Scanner keyboard = new Scanner(System.in);
@@ -32,7 +38,7 @@ public class Data
                 movieList.add(new Movie(title, licenseID, views, cost, expirationDate, renewalDate));
             }
             inputStream.close();
-            printMovieList(movieList);
+            //printMovieList(movieList); for testing
         } catch (FileNotFoundException e) {
             System.out.println("Error opening the file " +
                     fileName);
