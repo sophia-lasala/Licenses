@@ -1,5 +1,6 @@
+package Streaming;
+
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Movie {
@@ -7,6 +8,7 @@ public class Movie {
     private long views;
     private double cost;
     private LocalDate expirationDate, renewalDate;
+    private long days;
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
@@ -28,9 +30,25 @@ public class Movie {
         this.renewalDate = renewalDate;
     }
 
+    public Movie (String title, String licenseID, LocalDate expirationDate, LocalDate renewalDate, long days){
+        this.title = title;
+        this.licenseID = licenseID;
+        this.expirationDate = expirationDate;
+        this.renewalDate = renewalDate;
+        this.days = days;
+    }
+
     public String toString() {
         return title + " | " + licenseID + " | $" + cost + " | " + expirationDate.format(FORMATTER) + " | " +
                 renewalDate.format(FORMATTER) + " | " + views + " views";
+    }
+
+    public String toExpirationString() {
+        long days = java.time.temporal.ChronoUnit.DAYS.between(renewalDate, expirationDate);
+        return title + " | " + licenseID + " | " +
+                expirationDate.format(FORMATTER) + " | " +
+                renewalDate.format(FORMATTER) + " | " +
+                days + " days";
     }
 
     public String getTitle() {
@@ -80,4 +98,8 @@ public class Movie {
     public void setRenewalDate(LocalDate renewalDate) {
         this.renewalDate = renewalDate;
     }
+
+    public long getDays() { return days;}
+
+    public void setDays(long days) {this.days = days;}
 }
