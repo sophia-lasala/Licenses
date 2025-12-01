@@ -8,10 +8,9 @@ import java.time.LocalDate;
 public class Expiration {
     private LinkedList<Movie> expirationList = new LinkedList<>();
 
-    public void expirationList(LinkedList<Movie> expirationList){
-        Data data = new Data();
+    public static void expirationList(LinkedList<Movie> expirationList){
         ArrayList<Movie> movieList = new ArrayList<>();
-        data.movieList(movieList);
+        Data.movieList(movieList);
 
         String title, licenseID;
         LocalDate expirationDate, renewalDate;
@@ -32,11 +31,12 @@ public class Expiration {
             expirationList.add(temp);
 
         }
+        HistoryManager.currentHistory("Expiration", "formed expiration list");
         orgExpirationList(expirationList);
         printExpirationList(expirationList);
     }
 
-    public void orgExpirationList(LinkedList<Movie> expirationList) {
+    public static void orgExpirationList(LinkedList<Movie> expirationList) {
         int n = expirationList.size();
         for (int i = 0; i < n - 1; i++) {
             for (int j = 0; j < n - i - 1; j++) {
@@ -50,6 +50,7 @@ public class Expiration {
                 }
             }
         }
+        HistoryManager.currentHistory("Expiration", "organized expiration list");
     }
 
     public static void printExpirationList(LinkedList<Movie> expirationList) {
@@ -59,5 +60,8 @@ public class Expiration {
             Movie movie = expirationList.get(i);
             System.out.println(movie.toExpirationString());
         }
+
+        HistoryManager.currentHistory("Expiration", "printed expiration list");
     }
 }
+
