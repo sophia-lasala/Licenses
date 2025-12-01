@@ -11,7 +11,7 @@ public class Data
 {
     private ArrayList<Movie> movieList = new ArrayList<>();
 
-    public void movieList(ArrayList <Movie> movieList) {
+    public static void movieList(ArrayList <Movie> movieList) {
         String fileName = "Movie Database.csv";
         PrintWriter outputStream = null;
         Scanner inputStream = null;
@@ -21,7 +21,6 @@ public class Data
         double cost;
         LocalDate expirationDate, renewalDate;
 
-        System.out.println("Here is your list: ");
         try {
             inputStream = new Scanner(new File(fileName));
             line = inputStream.nextLine();
@@ -38,7 +37,8 @@ public class Data
                 movieList.add(new Movie(title, licenseID, views, cost, expirationDate, renewalDate));
             }
             inputStream.close();
-            //printMovieList(movieList); for testing
+            HistoryManager.currentHistory("Data", "formed movie list");
+            //printMovieList(movieList); //for testing
         } catch (FileNotFoundException e) {
             System.out.println("Error opening the file " +
                     fileName);
@@ -47,9 +47,11 @@ public class Data
     }
 
     public static void printMovieList(ArrayList<Movie> movieList) {
+        System.out.println("Here is your list: ");
         System.out.println("Title | License ID | Cost | Expiration Date | Renewal Date | Views\n");
         for (int i = 0; i < movieList.size(); i++) {
             System.out.println((i+1) + " " + movieList.get(i));
         }
+        HistoryManager.currentHistory("Data", "printed movie list");
     }
 }
