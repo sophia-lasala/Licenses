@@ -21,7 +21,7 @@ public class Licenses {
         ArrayList<Movie> movieList = new ArrayList<>();
 
         // Fill ArrayList with movies from CSV
-        data.movieList(movieList);
+        Data.movieList(movieList);
 
         // Clear structures in case method is called more than once
         expirationList.clear();
@@ -81,16 +81,17 @@ public class Licenses {
 
     // Build queue of licenses that expire within 30 days
     public void buildPendingQueue(LinkedList<Movie> expirationList) {
-        for (Movie movie : expirationList) {
-            if (movie.getDays() <= 30) {
-                pendingQueue.add(movie);
-            }
+        pendingQueue.clear();
+
+        for (int i = 0; i < 10; i++) {
+            Movie movie = expirationList.get(i);
+            pendingQueue.add(movie);
         }
     }
 
     // Print the pending queue
     public void printPendingQueue() {
-        System.out.println("Licenses expiring within 30 days:");
+        System.out.println("Licenses expiring most recently:");
         System.out.println("Title | License ID | Expiration Date | Renewal Date | Days");
         for (Movie movie : pendingQueue) {
             System.out.println(movie.toExpirationString());
@@ -113,5 +114,17 @@ public class Licenses {
 
     public Queue<Movie> getPendingQueue() {
         return pendingQueue;
+    }
+
+    public void setExpirationList(LinkedList<Movie> expirationList) {
+        this.expirationList = expirationList;
+    }
+
+    public void setPendingQueue(Queue<Movie> pendingQueue) {
+        this.pendingQueue = pendingQueue;
+    }
+
+    public void setLicenseMap(HashMap<String, Movie> licenseMap) {
+        this.licenseMap = licenseMap;
     }
 }
