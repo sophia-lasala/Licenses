@@ -16,8 +16,6 @@ public class Expiration {
         LocalDate expirationDate, renewalDate;
         long days;
 
-
-
         for (int i = 0 ; i < movieList.size(); i++){
             Movie temp = movieList.get(i);
             title = temp.getTitle();
