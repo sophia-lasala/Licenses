@@ -4,12 +4,17 @@ import java.io.PrintWriter;
 import java.io.FileNotFoundException;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Scanner;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Stack;
 
 public class Data
 {
     private ArrayList<Movie> movieList = new ArrayList<>();
+    private LinkedList<Movie> expirationList = new LinkedList<>();
+    private static Stack<History> stackHistory = new Stack<>();
 
     public static void movieList(ArrayList <Movie> movieList) {
         String fileName = "Movie Database.csv";
@@ -37,7 +42,7 @@ public class Data
                 movieList.add(new Movie(title, licenseID, views, cost, expirationDate, renewalDate));
             }
             inputStream.close();
-            HistoryManager.currentHistory("Data", "formed movie list");
+            //HistoryManager.currentHistory("Data", "formed movie list");
             //printMovieList(movieList); //for testing
         } catch (FileNotFoundException e) {
             System.out.println("Error opening the file " +
@@ -52,6 +57,76 @@ public class Data
         for (int i = 0; i < movieList.size(); i++) {
             System.out.println((i+1) + " " + movieList.get(i));
         }
-        HistoryManager.currentHistory("Data", "printed movie list");
+        //HistoryManager.currentHistory("Data", "printed movie list");
     }
-}
+
+    public static void expirationList(LinkedList<Movie> expirationList){
+        ArrayList<Movie> movieList = new ArrayList<>();
+        Data.movieList(movieList);
+
+        String title, licenseID;
+        LocalDate expirationDate, renewalDate;
+        long days;
+
+
+
+        for (int i = 0 ; i < movieList.size(); i++){
+            Movie temp = movieList.get(i);
+            title = temp.getTitle();
+            licenseID = temp.getLicenseID();
+            expirationDate = temp.getExpirationDate();
+            renewalDate = temp.getRenewalDate();
+
+            days = ChronoUnit.DAYS.between(renewalDate, expirationDate);
+
+            temp = new Movie(title, licenseID, expirationDate, renewalDate, days);
+            expirationList.add(temp);
+
+        }
+        //HistoryManager.currentHistory("Expiration", "formed expiration list");
+        orgExpirationList(expirationList);
+        printExpirationList(expirationList);
+    }
+
+    public static void orgExpirationList(LinkedList<Movie> expirationList) {
+        int n = expirationList.size();
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                Movie current = expirationList.get(j);
+                Movie next = expirationList.get(j + 1);
+
+                long x = current.getDays(), y = next.getDays();
+                if (x > y) {
+                    expirationList.set(j, next);
+                    expirationList.set(j + 1, current);
+                }
+            }
+        }
+        //HistoryManager.currentHistory("Expiration", "organized expiration list");
+    }
+
+    public static void printExpirationList(LinkedList<Movie> expirationList) {
+        System.out.println("Title | License ID | Expiration Date | Renewal Date | Days");
+
+        for (int i = 0; i < expirationList.size(); i++) {
+            Movie movie = expirationList.get(i);
+            System.out.println(movie.toExpirationString());
+        }
+
+       // HistoryManager.currentHistory("Expiration", "printed expiration list");
+    }
+
+    public static void currentHistory (String location, String task){
+        stackHistory.push(new History(location, task));
+    }
+
+    public static void printHistory () {
+        if (stackHistory.isEmpty()){
+            System.out.println("No changes have been currently made.");
+        }
+        else {
+            for (int i = 0; i < stackHistory.size(); i++) {
+                System.out.println((i + 1) + " " + stackHistory.get(i));
+            }
+        }
+    }
