@@ -3,18 +3,54 @@ package Streaming;
 import java.io.PrintWriter;
 import java.io.FileNotFoundException;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Scanner;
+import java.util.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Stack;
 
 public class Data
 {
     private ArrayList<Movie> movieList = new ArrayList<>();
     private LinkedList<Movie> expirationList = new LinkedList<>();
     private static Stack<History> stackHistory = new Stack<>();
+    private Queue<Movie> pendingQueue = new LinkedList<>();
+    private HashMap<String, Movie> licenseMap = new HashMap<>();
+
+    public void buildAllStructures() {
+        Data data = new Data();
+        ArrayList<Movie> movieList = new ArrayList<>();
+
+        // Fill ArrayList with movies from CSV
+        Data.movieList(movieList);
+
+        // Clear structures in case method is called more than once
+        expirationList.clear();
+        pendingQueue.clear();
+        licenseMap.clear();
+
+        for (Movie m : movieList) {
+            // 1) HashMap: license ID -> full Movie
+            licenseMap.put(m.getLicenseID(), m);
+
+            // 2) Build expiration list with days until expiration
+            long days = ChronoUnit.DAYS.between(m.getRenewalDate(), m.getExpirationDate());
+
+            Movie temp = new Movie(
+                    m.getTitle(),
+                    m.getLicenseID(),
+                    m.getExpirationDate(),
+                    m.getRenewalDate(),
+                    days
+            );
+
+            expirationList.add(temp);
+        }
+
+        // Sort linked list by days until expiration
+        orgExpirationList(expirationList);
+
+        // Build queue of licenses expiring within 30 days
+        buildPendingQueue(expirationList);
+    }
 
     public static void movieList(ArrayList <Movie> movieList) {
         String fileName = "Movie Database.csv";
@@ -128,5 +164,23 @@ public class Data
             for (int i = 0; i < stackHistory.size(); i++) {
                 System.out.println((i + 1) + " " + stackHistory.get(i));
             }
+        }
+    }
+
+    public void buildPendingQueue(LinkedList<Movie> expirationList) {
+        pendingQueue.clear();
+
+        for (int i = 0; i < 10; i++) {
+            Movie movie = expirationList.get(i);
+            pendingQueue.add(movie);
+        }
+    }
+
+    // Print the pending queue
+    public void printPendingQueue() {
+        System.out.println("Licenses expiring most recently:");
+        System.out.println("Title | License ID | Expiration Date | Renewal Date | Days");
+        for (Movie movie : pendingQueue) {
+            System.out.println(movie.toExpirationString());
         }
     }
