@@ -14,18 +14,26 @@ public class Data
     private static Stack<History> stackHistory = new Stack<>();
     private static Queue<Movie> pendingQueue = new LinkedList<>();
     private HashMap<String, Movie> licenseMap = new HashMap<>();
-    
+
     public void buildAllStructures() {
         movieList.clear();
         expirationList.clear();
         pendingQueue.clear();
         licenseMap.clear();
 
-        movieList(movieList); 
+        movieList(movieList);
         expirationList(expirationList);
-       //BuildPendingQueue(pendingQueue);
-        
+        buildPendingQueue(expirationList);
+
         for (Movie m : movieList) {
+            licenseMap.put(m.getLicenseID(), m);
+        }
+
+        for (Movie m : expirationList){
+            licenseMap.put(m.getLicenseID(), m);
+        }
+
+        for (Movie m : pendingQueue){
             licenseMap.put(m.getLicenseID(), m);
         }
     }
@@ -81,8 +89,6 @@ public class Data
         String title, licenseID;
         LocalDate expirationDate, renewalDate;
         long days;
-
-
 
         for (int i = 0 ; i < movieList.size(); i++){
             Movie temp = movieList.get(i);
@@ -145,6 +151,39 @@ public class Data
         }
     }
 
+    public void renewQueue(String licenseID, LocalDate newRenewalDate, LocalDate newExpirationDate) {
+        Movie movie = licenseMap.get(licenseID);
+        if (movie != null) {
+            movie.setRenewalDate(newRenewalDate);
+            movie.setExpirationDate(newExpirationDate);
+
+            long days = ChronoUnit.DAYS.between(newRenewalDate, newExpirationDate);
+            movie.setDays(days);
+        }
+
+        for (Movie m : expirationList) {
+            if (m.getLicenseID().equals(licenseID)) {
+                m.setRenewalDate(newRenewalDate);
+                m.setExpirationDate(newExpirationDate);
+                m.setDays(ChronoUnit.DAYS.between(newRenewalDate, newExpirationDate));
+            }
+        }
+
+        for (Movie m : pendingQueue) {
+            if (m.getLicenseID().equals(licenseID)) {
+                m.setRenewalDate(newRenewalDate);
+                m.setExpirationDate(newExpirationDate);
+                m.setDays(ChronoUnit.DAYS.between(newRenewalDate, newExpirationDate));
+            }
+        }
+
+        orgExpirationList(expirationList);
+
+        buildPendingQueue(expirationList);
+
+        currentHistory("Data", "renewed queue with new dates ");
+    }
+
     public static void buildPendingQueue(LinkedList<Movie> expirationList) {
         pendingQueue.clear();
 
@@ -162,3 +201,4 @@ public class Data
             System.out.println(movie.toExpirationString());
         }
     }
+}
