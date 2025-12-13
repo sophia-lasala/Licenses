@@ -12,44 +12,22 @@ public class Data
     private ArrayList<Movie> movieList = new ArrayList<>();
     private LinkedList<Movie> expirationList = new LinkedList<>();
     private static Stack<History> stackHistory = new Stack<>();
-    private Queue<Movie> pendingQueue = new LinkedList<>();
+    private static Queue<Movie> pendingQueue = new LinkedList<>();
     private HashMap<String, Movie> licenseMap = new HashMap<>();
-
+    
     public void buildAllStructures() {
-        Data data = new Data();
-        ArrayList<Movie> movieList = new ArrayList<>();
-
-        // Fill ArrayList with movies from CSV
-        Data.movieList(movieList);
-
-        // Clear structures in case method is called more than once
+        movieList.clear();
         expirationList.clear();
         pendingQueue.clear();
         licenseMap.clear();
 
+        movieList(movieList); 
+        expirationList(expirationList);
+       //BuildPendingQueue(pendingQueue);
+        
         for (Movie m : movieList) {
-            // 1) HashMap: license ID -> full Movie
             licenseMap.put(m.getLicenseID(), m);
-
-            // 2) Build expiration list with days until expiration
-            long days = ChronoUnit.DAYS.between(m.getRenewalDate(), m.getExpirationDate());
-
-            Movie temp = new Movie(
-                    m.getTitle(),
-                    m.getLicenseID(),
-                    m.getExpirationDate(),
-                    m.getRenewalDate(),
-                    days
-            );
-
-            expirationList.add(temp);
         }
-
-        // Sort linked list by days until expiration
-        orgExpirationList(expirationList);
-
-        // Build queue of licenses expiring within 30 days
-        buildPendingQueue(expirationList);
     }
 
     public static void movieList(ArrayList <Movie> movieList) {
@@ -121,7 +99,7 @@ public class Data
         }
         //HistoryManager.currentHistory("Expiration", "formed expiration list");
         orgExpirationList(expirationList);
-        printExpirationList(expirationList);
+        //printExpirationList(expirationList);
     }
 
     public static void orgExpirationList(LinkedList<Movie> expirationList) {
@@ -167,7 +145,7 @@ public class Data
         }
     }
 
-    public void buildPendingQueue(LinkedList<Movie> expirationList) {
+    public static void buildPendingQueue(LinkedList<Movie> expirationList) {
         pendingQueue.clear();
 
         for (int i = 0; i < 10; i++) {
@@ -177,7 +155,7 @@ public class Data
     }
 
     // Print the pending queue
-    public void printPendingQueue() {
+    public static void printPendingQueue() {
         System.out.println("Licenses expiring most recently:");
         System.out.println("Title | License ID | Expiration Date | Renewal Date | Days");
         for (Movie movie : pendingQueue) {
