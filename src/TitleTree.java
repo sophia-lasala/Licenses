@@ -1,7 +1,7 @@
 package Streaming;
 import java.util.ArrayList;
 
-public class Tree {
+public class TitleTree {
 
     // Node class for the BST
     private static class Node {
@@ -18,12 +18,12 @@ public class Tree {
 
     private Node root;
 
-    public Tree() {
+    public TitleTree() {
         root = null;
     }
 
 
-     //Build the tree from an existing ArrayList<Movie>
+    //Build the tree from an existing ArrayList<Movie>
 
     public void buildFromList(ArrayList<Movie> movieList) {
         for (Movie m : movieList) {
@@ -51,8 +51,6 @@ public class Tree {
         } else if (cmp > 0) {
             current.right = insertRec(current.right, movie);
         } else {
-            // Title already exists; you can decide to overwrite or ignore.
-            // Here, we'll overwrite the stored movie.
             current.movie = movie;
         }
 
@@ -60,7 +58,7 @@ public class Tree {
     }
 
 
-     //Check if a title exists in the tree.
+    //Check if a title exists in the tree.
     public boolean containsTitle(String title) {
         return search(title) != null;
     }
@@ -90,7 +88,7 @@ public class Tree {
     }
 
 
-     // print all titles in sorted order.
+    // print all titles in sorted order.
 
     public void printInOrder() {
         printInOrderRec(root);
