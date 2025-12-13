@@ -1,3 +1,4 @@
+package Streaming;
 import java.util.ArrayList;
 
 public class ViewsTree {
@@ -19,35 +20,35 @@ public class ViewsTree {
     }
 
     // Method to insert a new value into the tree
-    public void insert(int value) {
-        root = insertRec(root, value);
+    public void insert(long views) {
+        root = insertRec(root, views);
     }
 
-    private Node insertRec(Node root, int value) {
+    private Node insertRec(Node root, long views) {
         if (root == null) {
-            root = new Node(value);
+            root = new Node(views);
             return root;
         }
-        if (value < root.views) {
-            root.left = insertRec(root.left, value);
-        } else if (value > root.views) {
-            root.right = insertRec(root.right, value);
+        if (views < root.views) {
+            root.left = insertRec(root.left, views);
+        } else if (views > root.views) {
+            root.right = insertRec(root.right, views);
         }
         return root;
     }
 
     // Method to search for a value in the tree
-    public boolean search(int value) {
-        return searchRec(root, value);
+    public boolean search(long views) {
+        return searchRec(root, views);
     }
 
-    private boolean searchRec(Node root, int value) {
+    private boolean searchRec(Node root, long views) {
         if (root == null) {
             return false;
         }
-        if (root.views == value) {
+        if (root.views == views) {
             return true;
         }
-        return value < root.views ? searchRec(root.left, value) : searchRec(root.right, value);
+        return views < root.views ? searchRec(root.left, views) : searchRec(root.right, views);
     }
 }
