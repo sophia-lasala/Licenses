@@ -1,15 +1,3 @@
-package Streaming;
-
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.time.LocalDate;
-
-public class Licenses {
-
-    private LinkedList<Movie> expirationList = new LinkedList<>();
     private Queue<Movie> pendingQueue = new LinkedList<>();
 
     // HashMap that maps license ID -> full Movie object
@@ -54,31 +42,7 @@ public class Licenses {
     }
 
     // Bubble-sort the expiration list by days
-    public void orgExpirationList(LinkedList<Movie> expirationList) {
-        int n = expirationList.size();
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = 0; j < n - 1 - i; j++) {
-                Movie current = expirationList.get(j);
-                Movie next = expirationList.get(j + 1);
-                long x = current.getDays();
-                long y = next.getDays();
-
-                if (x > y) {
-                    expirationList.set(j, next);
-                    expirationList.set(j + 1, current);
-                }
-            }
-        }
-    }
-
-    // Print the expiration linked list
-    public static void printExpirationList(LinkedList<Movie> expirationList) {
-        System.out.println("Title | License ID | Expiration Date | Renewal Date | Days");
-        for (Movie movie : expirationList) {
-            System.out.println(movie.toExpirationString());
-        }
-    }
-
+    
     // Build queue of licenses that expire within 30 days
     public void buildPendingQueue(LinkedList<Movie> expirationList) {
         pendingQueue.clear();
@@ -98,33 +62,5 @@ public class Licenses {
         }
     }
 
-    // Look up a movie by its license ID using the HashMap
-    public Movie findByLicenseID(String id) {
-        return licenseMap.get(id);
-    }
-
-    // Getters
-    public HashMap<String, Movie> getLicenseMap() {
-        return licenseMap;
-    }
-
-    public LinkedList<Movie> getExpirationList() {
-        return expirationList;
-    }
-
-    public Queue<Movie> getPendingQueue() {
-        return pendingQueue;
-    }
-
-    public void setExpirationList(LinkedList<Movie> expirationList) {
-        this.expirationList = expirationList;
-    }
-
-    public void setPendingQueue(Queue<Movie> pendingQueue) {
-        this.pendingQueue = pendingQueue;
-    }
-
-    public void setLicenseMap(HashMap<String, Movie> licenseMap) {
-        this.licenseMap = licenseMap;
-    }
-}
+  
+ 
