@@ -9,6 +9,7 @@ public class Movie {
     private double cost;
     private LocalDate expirationDate, renewalDate;
     private long days;
+    private int mappedID;
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
@@ -39,13 +40,13 @@ public class Movie {
     }
 
     public String toString() {
-        return title + " | " + licenseID + " | $" + cost + " | " + expirationDate.format(FORMATTER) + " | " +
+        return title + " | " + mappedID + " | $" + cost + " | " + expirationDate.format(FORMATTER) + " | " +
                 renewalDate.format(FORMATTER) + " | " + views + " views";
     }
 
     public String toExpirationString() {
         long days = java.time.temporal.ChronoUnit.DAYS.between(renewalDate, expirationDate);
-        return title + " | " + licenseID + " | " +
+        return title + " | " + mappedID + " | " +
                 expirationDate.format(FORMATTER) + " | " +
                 renewalDate.format(FORMATTER) + " | " +
                 days + " days";
@@ -102,4 +103,8 @@ public class Movie {
     public long getDays() { return days;}
 
     public void setDays(long days) {this.days = days;}
+
+    public int getMappedID() { return mappedID;}
+
+    public void setMappedID(int mappedID) {this.mappedID = mappedID;}
 }
