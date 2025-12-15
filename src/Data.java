@@ -21,24 +21,30 @@ public class Data
         pendingQueue.clear();
         licenseMap.clear();
 
-        movieList(movieList);
-        expirationList(expirationList);
+        buildMovieList(movieList);
+        buildExpirationList(expirationList);
         buildPendingQueue(expirationList);
 
+        Map<String, Integer> licenseIdToNumber = new HashMap<>();
+        int counter = 1;
+
         for (Movie m : movieList) {
-            licenseMap.put(m.getLicenseID(), m);
+            if (!licenseIdToNumber.containsKey(m.getLicenseID())) {
+                licenseIdToNumber.put(m.getLicenseID(), counter);
+                m.setMappedID(counter);
+                counter++;
+            }
         }
-
-        for (Movie m : expirationList){
-            licenseMap.put(m.getLicenseID(), m);
-        }
-
-        for (Movie m : pendingQueue){
-            licenseMap.put(m.getLicenseID(), m);
+        for (Movie m : expirationList) {
+            if (!licenseIdToNumber.containsKey(m.getLicenseID())) {
+                licenseIdToNumber.put(m.getLicenseID(), counter);
+                m.setMappedID(counter);
+                counter++;
+            }
         }
     }
 
-    public static void movieList(ArrayList <Movie> movieList) {
+    public static void buildMovieList(ArrayList <Movie> movieList) {
         String fileName = "Movie Database.csv";
         PrintWriter outputStream = null;
         Scanner inputStream = null;
@@ -73,7 +79,7 @@ public class Data
         }
     }
 
-    public static void printMovieList(ArrayList<Movie> movieList) {
+    public void printMovieList(ArrayList<Movie> movieList) {
         System.out.println("Here is your list: ");
         System.out.println("Title | License ID | Cost | Expiration Date | Renewal Date | Views\n");
         for (int i = 0; i < movieList.size(); i++) {
@@ -82,9 +88,9 @@ public class Data
         //HistoryManager.currentHistory("Data", "printed movie list");
     }
 
-    public static void expirationList(LinkedList<Movie> expirationList){
+    public static void buildExpirationList(LinkedList<Movie> expirationList){
         ArrayList<Movie> movieList = new ArrayList<>();
-        Data.movieList(movieList);
+        Data.buildMovieList(movieList);
 
         String title, licenseID;
         LocalDate expirationDate, renewalDate;
@@ -125,7 +131,7 @@ public class Data
         //HistoryManager.currentHistory("Expiration", "organized expiration list");
     }
 
-    public static void printExpirationList(LinkedList<Movie> expirationList) {
+    public void printExpirationList(LinkedList<Movie> expirationList) {
         System.out.println("Title | License ID | Expiration Date | Renewal Date | Days");
 
         for (int i = 0; i < expirationList.size(); i++) {
@@ -177,11 +183,6 @@ public class Data
             }
         }
 
-        orgExpirationList(expirationList);
-
-        buildPendingQueue(expirationList);
-
-        currentHistory("Data", "renewed queue with new dates ");
     }
 
     public static void buildPendingQueue(LinkedList<Movie> expirationList) {
@@ -194,11 +195,55 @@ public class Data
     }
 
     // Print the pending queue
-    public static void printPendingQueue() {
+    public void printPendingQueue() {
         System.out.println("Licenses expiring most recently:");
         System.out.println("Title | License ID | Expiration Date | Renewal Date | Days");
         for (Movie movie : pendingQueue) {
             System.out.println(movie.toExpirationString());
         }
+    }
+
+    public Movie findByLicenseID(String id) {
+        return licenseMap.get(id);
+    }
+
+    public ArrayList<Movie> getMovieList() {
+        return movieList;
+    }
+
+    public void setMovieList(ArrayList<Movie> movieList) {
+        this.movieList = movieList;
+    }
+
+    public LinkedList<Movie> getExpirationList() {
+        return expirationList;
+    }
+
+    public void setExpirationList(LinkedList<Movie> expirationList) {
+        this.expirationList = expirationList;
+    }
+
+    public static Stack<History> getStackHistory() {
+        return stackHistory;
+    }
+
+    public static void setStackHistory(Stack<History> stackHistory) {
+        Data.stackHistory = stackHistory;
+    }
+
+    public static Queue<Movie> getPendingQueue() {
+        return pendingQueue;
+    }
+
+    public static void setPendingQueue(Queue<Movie> pendingQueue) {
+        Data.pendingQueue = pendingQueue;
+    }
+
+    public HashMap<String, Movie> getLicenseMap() {
+        return licenseMap;
+    }
+
+    public void setLicenseMap(HashMap<String, Movie> licenseMap) {
+        this.licenseMap = licenseMap;
     }
 }
