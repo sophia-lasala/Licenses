@@ -1,6 +1,8 @@
 package Streaming;
 import java.util.ArrayList;
 
+import static Streaming.Data.currentHistory;
+
 public class TitleTree {
 
     // Node class for the BST
@@ -72,6 +74,7 @@ public class TitleTree {
 
     public Movie search(String title) {
         Node node = searchRec(root, title);
+        currentHistory("Title Tree", "searched a movie based on title");
         return (node == null) ? null : node.movie;
     }
 
@@ -81,7 +84,6 @@ public class TitleTree {
         }
 
         int cmp = title.compareToIgnoreCase(current.title);
-
         if (cmp == 0) {
             return current;
         } else if (cmp < 0) {
@@ -103,6 +105,7 @@ public class TitleTree {
         printInOrderRec(current.left);
         System.out.println(current.title + " | " + current.views + " views |  $" + current.cost);
         printInOrderRec(current.right);
+        //currentHistory("Title Tree", "organized list in alphabetical order");
+        //Causes unspeakable amounts of repeats
     }
 }
-
