@@ -1,54 +1,109 @@
 package Streaming;
 import java.util.ArrayList;
 
+import static Streaming.Data.currentHistory;
+
 public class ViewsTree {
 
-    class Node {
+    // Node class for the BST
+    private static class Node {
+        double cost;
+        String title;
         long views;
-        Node left, right;
+        Movie movie;
+        Node left;
+        Node right;
 
-        public Node(long views) {
-            this.views = views;
-            left = right = null;
+        Node(Movie movie) {
+            this.cost = movie.getCost();
+            this.title = movie.getTitle();
+            this.views = movie.getViews();
+            this.movie = movie;
         }
     }
 
     private Node root;
 
     public ViewsTree() {
-        root = new Node(50);
+        root = null;
     }
 
-    // Method to insert a new value into the tree
-    public void insert(long views) {
-        root = insertRec(root, views);
+
+    //Build the tree from an existing ArrayList<Movie>
+
+    public void buildFromList(ArrayList<Movie> movieList) {
+        for (Movie m : movieList) {
+            insert(m);
+        }
     }
 
-    private Node insertRec(Node root, long views) {
-        if (root == null) {
-            root = new Node(views);
-            return root;
-        }
-        if (views < root.views) {
-            root.left = insertRec(root.left, views);
-        } else if (views > root.views) {
-            root.right = insertRec(root.right, views);
-        }
-        return root;
+    /**
+     * Insert a Movie into the BST using its views as the key.
+     */
+    public void insert(Movie movie) {
+        root = insertRec(root, movie);
     }
 
-    // Method to search for a value in the tree
-    public boolean search(long views) {
-        return searchRec(root, views);
+    private Node insertRec(Node current, Movie movie) {
+        if (current == null) {
+            return new Node(movie);
+        }
+
+        String key = Long.toString(movie.getViews());
+        int cmp = key.compareToIgnoreCase(String.valueOf(current.views));
+
+        if (cmp < 0) {
+            current.left = insertRec(current.left, movie);
+        } else if (cmp > 0) {
+            current.right = insertRec(current.right, movie);
+        } else {
+            current.movie = movie;
+        }
+
+        return current;
     }
 
-    private boolean searchRec(Node root, long views) {
-        if (root == null) {
-            return false;
+
+    //Check if a views exists in the tree.
+    public boolean containsViews(long views) {
+        return search(views) != null;
+    }
+
+
+    //Search for a Movie by its views.
+
+    public Movie search(long views) {
+        Node node = searchRec(root, views);
+        return (node == null) ? null : node.movie;
+    }
+
+    private Node searchRec(Node current, long views) {
+        if (current == null || views == 0) {
+            return null;
         }
-        if (root.views == views) {
-            return true;
+
+        int cmp = (int) views;
+
+        if (cmp == 0) {
+            return current;
+        } else if (cmp < 0) {
+            return searchRec(current.left, views);
+        } else {
+            return searchRec(current.right, views);
         }
-        return views < root.views ? searchRec(root.left, views) : searchRec(root.right, views);
+    }
+
+
+    // print all views in sorted order.
+
+    public void printInOrder() {
+        printInOrderRec(root);
+    }
+
+    private void printInOrderRec(Node current) {
+        if (current == null) return;
+        printInOrderRec(current.left);
+        System.out.println(current.title + " | " + current.views + " views |  $" + current.cost);
+        printInOrderRec(current.right);
     }
 }
