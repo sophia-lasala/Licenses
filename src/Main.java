@@ -1,11 +1,14 @@
 package Streaming;
 
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
+
+import static Streaming.Data.currentHistory;
 
 public class Main {
     public static void main(String[] args) {
@@ -14,11 +17,13 @@ public class Main {
         Data data = new Data ();
         TitleTree titleTree = new TitleTree();
         CostTree costTree = new CostTree();
+        ViewsTree viewsTree = new ViewsTree();
 
         System.out.println("Importing CSV file...");
         data.buildAllStructures();
         titleTree.buildFromList(data.getMovieList());
         costTree.buildFromList(data.getMovieList());
+        viewsTree.buildFromList(data.getMovieList());
         ArrayList<Movie> movieList = data.getMovieList();
         LinkedList<Movie> expirationList = data.getExpirationList();
         Queue<Movie> pendingQueue = data.getPendingQueue();
@@ -26,7 +31,8 @@ public class Main {
         System.out.println("Complete!");
 
         System.out.println("\nWould you like to: (1) Access all data (2) Access all licenses (3) Review licenses that need " +
-                "to be renewed soon (4) Access License IDs (5) Search for a Title (6) Access History (7) Exit");
+                "to be renewed soon \n(4) Access License IDs (5) Search for a Title (6) Organize Movies " +
+                "(7) Access History (8) Exit");
 
         userInput = keyboard.next();
 
@@ -107,12 +113,18 @@ public class Main {
                     userInput = keyboard.next();
                     if (userInput.equalsIgnoreCase("1")){
                         titleTree.printInOrder();
+                        currentHistory("Title Tree", "organized list in alphabetical order");
                     }
                     else if (userInput.equalsIgnoreCase("2")){
                         costTree.printInOrder();
+                        currentHistory("Cost Tree", "organized list in cost order");
+                    }
+                    else if (userInput.equalsIgnoreCase("3")){
+                        viewsTree.printInOrder();
+                        currentHistory("Views Tree", "organized list in views order");
                     }
                     else{
-                        System.out.println();
+                        System.out.println("Invalid Choice");
                     }
                     break;
                 case "7":
@@ -124,7 +136,8 @@ public class Main {
             }
 
             System.out.println("\nWould you like to: (1) Access all data (2) Access all licenses (3) Review licenses that need " +
-                    "to be renewed soon (4) Access License IDs (5) Search for movies by Title (6) Access History (7) Exit");
+                    "to be renewed soon \n(4) Access License IDs (5) Search for a Title (6) Organize Movies " +
+                    "(7) Access History (8) Exit");
 
             userInput = keyboard.next();
         }
