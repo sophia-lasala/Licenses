@@ -15,29 +15,55 @@ public class Data
     private static Queue<Movie> pendingQueue = new LinkedList<>();
     private HashMap<String, Movie> licenseMap = new HashMap<>();
 
+    private HashMap<String, Integer> licenseIdToNumber = new HashMap<>();
+    private HashMap<Integer, String> numberToLicenseId = new HashMap<>();
+
     public void buildAllStructures() {
         movieList.clear();
         expirationList.clear();
         pendingQueue.clear();
         licenseMap.clear();
+        licenseIdToNumber.clear();
+        numberToLicenseId.clear();
 
         buildMovieList(movieList);
-        buildExpirationList(expirationList);
+        buildExpirationList(expirationList, movieList);
         buildPendingQueue(expirationList);
 
-        Map<String, Integer> licenseIdToNumber = new HashMap<>();
         int counter = 1;
 
         for (Movie m : movieList) {
-            if (!licenseIdToNumber.containsKey(m.getLicenseID())) {
-                licenseIdToNumber.put(m.getLicenseID(), counter);
+            String licenseID = m.getLicenseID();
+            if (!licenseIdToNumber.containsKey(licenseID)) {
+                licenseIdToNumber.put(licenseID, counter);
+                numberToLicenseId.put(counter, licenseID);
+                m.setMappedID(counter);
+                counter++;
+            } else {
+                m.setMappedID(licenseIdToNumber.get(licenseID));
+            }
+            licenseMap.put(licenseID, m);
+        }
+
+        for (Movie m : expirationList) {
+            String licenseID = m.getLicenseID();
+            if (licenseIdToNumber.containsKey(licenseID)) {
+                m.setMappedID(licenseIdToNumber.get(licenseID));
+            } else {
+                licenseIdToNumber.put(licenseID, counter);
+                numberToLicenseId.put(counter, licenseID);
                 m.setMappedID(counter);
                 counter++;
             }
         }
-        for (Movie m : expirationList) {
-            if (!licenseIdToNumber.containsKey(m.getLicenseID())) {
-                licenseIdToNumber.put(m.getLicenseID(), counter);
+
+        for (Movie m : pendingQueue) {
+            String licenseID = m.getLicenseID();
+            if (licenseIdToNumber.containsKey(licenseID)) {
+                m.setMappedID(licenseIdToNumber.get(licenseID));
+            } else {
+                licenseIdToNumber.put(licenseID, counter);
+                numberToLicenseId.put(counter, licenseID);
                 m.setMappedID(counter);
                 counter++;
             }
@@ -88,30 +114,16 @@ public class Data
         //HistoryManager.currentHistory("Data", "printed movie list");
     }
 
-    public static void buildExpirationList(LinkedList<Movie> expirationList){
-        ArrayList<Movie> movieList = new ArrayList<>();
-        Data.buildMovieList(movieList);
+    public static void buildExpirationList(LinkedList<Movie> expirationList, ArrayList<Movie> movieList) {
+        expirationList.clear();
 
-        String title, licenseID;
-        LocalDate expirationDate, renewalDate;
-        long days;
-
-        for (int i = 0 ; i < movieList.size(); i++){
-            Movie temp = movieList.get(i);
-            title = temp.getTitle();
-            licenseID = temp.getLicenseID();
-            expirationDate = temp.getExpirationDate();
-            renewalDate = temp.getRenewalDate();
-
-            days = ChronoUnit.DAYS.between(renewalDate, expirationDate);
-
-            temp = new Movie(title, licenseID, expirationDate, renewalDate, days);
-            expirationList.add(temp);
-
+        for (Movie m : movieList) {
+            long days = ChronoUnit.DAYS.between(m.getRenewalDate(), m.getExpirationDate());
+            m.setDays(days);
+            expirationList.add(m);
         }
-        //HistoryManager.currentHistory("Expiration", "formed expiration list");
+
         orgExpirationList(expirationList);
-        //printExpirationList(expirationList);
     }
 
     public static void orgExpirationList(LinkedList<Movie> expirationList) {
@@ -183,6 +195,10 @@ public class Data
             }
         }
 
+        orgExpirationList(expirationList);
+
+        buildPendingQueue(expirationList);
+
     }
 
     public static void buildPendingQueue(LinkedList<Movie> expirationList) {
@@ -243,7 +259,19 @@ public class Data
         return licenseMap;
     }
 
-    public void setLicenseMap(HashMap<String, Movie> licenseMap) {
-        this.licenseMap = licenseMap;
+    public void setLicenseMap(HashMap<String, Movie> licenseMap) {this.licenseMap = licenseMap;}
+
+    public int getNumberByLicense(String licenseID) {
+        return licenseIdToNumber.getOrDefault(licenseID, -1);
     }
+
+    public String getLicenseByNumber(int number) {
+        return numberToLicenseId.get(number);
+    }
+
+    public Movie getMovieByNumber(int number) {
+        String licenseID = numberToLicenseId.get(number);
+        return (licenseID != null) ? licenseMap.get(licenseID) : null;
+    }
+
 }
