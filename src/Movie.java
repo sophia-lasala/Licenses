@@ -108,3 +108,4 @@ public class Movie {
 
     public void setMappedID(int mappedID) {this.mappedID = mappedID;}
 }
+
