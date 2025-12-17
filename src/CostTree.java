@@ -1,6 +1,8 @@
 package Streaming;
 import java.util.ArrayList;
 
+import static Streaming.Data.currentHistory;
+
 public class CostTree {
 
     // Node class for the BST
