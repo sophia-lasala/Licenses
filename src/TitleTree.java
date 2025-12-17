@@ -6,6 +6,8 @@ public class TitleTree {
     // Node class for the BST
     private static class Node {
         String title;
+        double cost;
+        long views;
         Movie movie;
         Node left;
         Node right;
@@ -13,6 +15,8 @@ public class TitleTree {
         Node(Movie movie) {
             this.title = movie.getTitle();
             this.movie = movie;
+            this.cost = movie.getCost();
+            this.views = movie.getViews();
         }
     }
 
@@ -97,7 +101,8 @@ public class TitleTree {
     private void printInOrderRec(Node current) {
         if (current == null) return;
         printInOrderRec(current.left);
-        System.out.println(current.title);
+        System.out.println(current.title + " | " + current.views + " views |  $" + current.cost);
         printInOrderRec(current.right);
     }
 }
+
