@@ -68,6 +68,7 @@ public class Data
                 counter++;
             }
         }
+        currentHistory("Data", "populated all structures");
     }
 
     public static void buildMovieList(ArrayList <Movie> movieList) {
@@ -103,6 +104,7 @@ public class Data
                     fileName);
             System.exit(0);
         }
+        currentHistory("Data", "built main movie list");
     }
 
     public void printMovieList(ArrayList<Movie> movieList) {
@@ -111,7 +113,7 @@ public class Data
         for (int i = 0; i < movieList.size(); i++) {
             System.out.println((i+1) + " " + movieList.get(i));
         }
-        //HistoryManager.currentHistory("Data", "printed movie list");
+        currentHistory("Data", "printed main movie list");
     }
 
     public static void buildExpirationList(LinkedList<Movie> expirationList, ArrayList<Movie> movieList) {
@@ -122,7 +124,7 @@ public class Data
             m.setDays(days);
             expirationList.add(m);
         }
-
+        currentHistory("Data", "built expiration list");
         orgExpirationList(expirationList);
     }
 
@@ -140,7 +142,7 @@ public class Data
                 }
             }
         }
-        //HistoryManager.currentHistory("Expiration", "organized expiration list");
+        currentHistory("Data", "organized expiration list");
     }
 
     public void printExpirationList(LinkedList<Movie> expirationList) {
@@ -150,8 +152,7 @@ public class Data
             Movie movie = expirationList.get(i);
             System.out.println(movie.toExpirationString());
         }
-
-       // HistoryManager.currentHistory("Expiration", "printed expiration list");
+        currentHistory("Data", "printed expiration list");
     }
 
     public static void currentHistory (String location, String task){
@@ -167,6 +168,7 @@ public class Data
                 System.out.println((i + 1) + " " + stackHistory.get(i));
             }
         }
+        currentHistory("Data", "printed history list");
     }
 
     public void renewQueue(String licenseID, LocalDate newRenewalDate, LocalDate newExpirationDate) {
@@ -198,7 +200,7 @@ public class Data
         orgExpirationList(expirationList);
 
         buildPendingQueue(expirationList);
-
+        currentHistory("Data", "renewed item in pending renewals");
     }
 
     public static void buildPendingQueue(LinkedList<Movie> expirationList) {
@@ -208,6 +210,7 @@ public class Data
             Movie movie = expirationList.get(i);
             pendingQueue.add(movie);
         }
+        currentHistory("Data", "built pending renewals queue");
     }
 
     // Print the pending queue
@@ -217,6 +220,7 @@ public class Data
         for (Movie movie : pendingQueue) {
             System.out.println(movie.toExpirationString());
         }
+        currentHistory("Data", "printed pending renewals queue");
     }
 
     public Movie findByLicenseID(String id) {
